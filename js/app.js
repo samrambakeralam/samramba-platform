@@ -456,4 +456,49 @@ async function registerCustomer() {
 
     }
 
-},
+            },
+
+        modal: {
+
+            ondismiss: function () {
+
+                console.log("Checkout Closed");
+
+                setLoading(false);
+
+            }
+
+        }
+
+    };
+
+    const rzp = new Razorpay(options);
+
+    rzp.on("payment.failed", function (response) {
+
+        console.error(response.error);
+
+        setLoading(false);
+
+        alert(
+            response.error.description ||
+            "Payment Failed"
+        );
+
+    });
+
+    rzp.open();
+
+}
+
+catch (err) {
+
+    console.error(err);
+
+    setLoading(false);
+
+    alert("Unable to connect to server.");
+
+}
+
+}
