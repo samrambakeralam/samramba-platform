@@ -372,121 +372,88 @@ async function registerCustomer() {
 
             handler: async function (payment) {
 
-                console.log("Payment Successful");
+    console.log("==================================");
+    console.log("PAYMENT HANDLER STARTED");
+    console.log("==================================");
 
-                console.log(payment);
+    console.log("Payment Successful");
 
-                try {
+    console.log(payment);
 
-                    const verifyResponse = await fetch(
+    console.log("Customer ID:", result.customerID);
 
-                        CONFIG.API_URL + "/verify-payment",
+    console.log("Calling /verify-payment...");
 
-                        {
+    try {
 
-                            method: "POST",
+        const verifyResponse = await fetch(
 
-                            headers: {
+            CONFIG.API_URL + "/verify-payment",
 
-                                "Content-Type": "application/json"
+            {
 
-                            },
+                method: "POST",
 
-                            body: JSON.stringify({
+                headers: {
 
-                                customerID: result.customerID,
+                    "Content-Type": "application/json"
 
-                                razorpay_payment_id:
-                                    payment.razorpay_payment_id,
+                },
 
-                                razorpay_order_id:
-                                    payment.razorpay_order_id,
+                body: JSON.stringify({
 
-                                razorpay_signature:
-                                    payment.razorpay_signature
+                    customerID: result.customerID,
 
-                            })
+                    razorpay_payment_id:
+                        payment.razorpay_payment_id,
 
-                        }
+                    razorpay_order_id:
+                        payment.razorpay_order_id,
 
-                    );
+                    razorpay_signature:
+                        payment.razorpay_signature
 
-                    const verifyResult =
-                        await verifyResponse.json();
-
-                    console.log(verifyResult);
-
-                    setLoading(false);
-
-                    if (!verifyResult.success) {
-
-                        alert(verifyResult.message);
-
-                        return;
-
-                    }
-
-                    alert("Payment Successful!");
-
-                    // TODO
-                    // Replace later with:
-                    // window.location.href = "success.html";
-
-                }
-
-                catch (err) {
-
-                    console.error(err);
-
-                    setLoading(false);
-
-                    alert("Payment verification failed.");
-
-                }
-
-            },
-
-            modal: {
-
-                ondismiss: function () {
-
-                    console.log("Checkout Closed");
-
-                    setLoading(false);
-
-                }
+                })
 
             }
 
-        };
+        );
 
-        const rzp = new Razorpay(options);
+        console.log("HTTP Status:", verifyResponse.status);
 
-        rzp.on("payment.failed", function (response) {
+        const verifyResult = await verifyResponse.json();
 
-            console.log(response.error);
+        console.log("Verify Response:");
 
-            setLoading(false);
+        console.log(verifyResult);
 
-            alert(
-                response.error.description ||
-                "Payment Failed"
-            );
+        setLoading(false);
 
-        });
+        if (!verifyResult.success) {
 
-        rzp.open();
+            alert(verifyResult.message);
+
+            return;
+
+        }
+
+        alert("Payment Verified Successfully!");
+
+        // Later
+        // window.location.href = "success.html";
 
     }
 
     catch (err) {
 
+        console.error("VERIFY PAYMENT ERROR");
+
         console.error(err);
 
         setLoading(false);
 
-        alert("Unable to connect to server.");
+        alert("Payment verification failed.");
 
     }
 
-}
+},
