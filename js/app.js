@@ -334,6 +334,10 @@ async function registerCustomer() {
         // Razorpay Checkout
         //---------------------------------------
 
+console.log("========== CREATE ORDER RESULT ==========");
+console.log(result);
+console.log("Customer ID from create-order:", result.customerID);
+
         const options = {
 
             key: result.razorpay.key,
@@ -380,7 +384,7 @@ async function registerCustomer() {
 
     console.log(payment);
 
-    console.log("Customer ID:", result.customerID);
+    alert("CUSTOMER ID USED FOR PAYMENT: " + result.customerID);
 
     console.log("Calling /verify-payment...");
 
